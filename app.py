@@ -1,20 +1,22 @@
 import os
-import json
+import gc
 import numpy as np
 import tensorflow as tf
+
+# CONFIGURACIÓN DE BAJO CONSUMO
 tf.config.threading.set_inter_op_parallelism_threads(1)
 tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.set_visible_devices([], 'GPU') # Forzar CPU
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from tensorflow.keras.models import load_model
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras import layers, models
 from PIL import Image
 
-# 1. Configuración de la App
 app = Flask(__name__)
-# Permitimos CORS para que Vercel pueda conectarse sin bloqueos
+# CORS agresivo para evitar el error de consola
 CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+
 
 # 2. Rutas Absolutas (Vital para que Render encuentre los archivos)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
