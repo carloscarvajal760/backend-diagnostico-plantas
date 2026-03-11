@@ -2,6 +2,8 @@ import os
 import json
 import numpy as np
 import tensorflow as tf
+tf.config.threading.set_inter_op_parallelism_threads(1)
+tf.config.threading.set_intra_op_parallelism_threads(1)
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from tensorflow.keras.models import load_model
@@ -12,7 +14,7 @@ from PIL import Image
 # 1. Configuración de la App
 app = Flask(__name__)
 # Permitimos CORS para que Vercel pueda conectarse sin bloqueos
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 # 2. Rutas Absolutas (Vital para que Render encuentre los archivos)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
